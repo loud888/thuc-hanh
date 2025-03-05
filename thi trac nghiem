@@ -53,7 +53,7 @@
     <div class="container">
         <h2>Multiple Choice Test</h2>
 
-        <!-- User Info Form -->
+       
         <div id="user-info">
             <label for="name">Full Name:</label>
             <input type="text" id="name" required>
@@ -70,30 +70,31 @@
             <button id="start-btn">Start Test</button>
         </div>
 
-        <!-- Quiz Section (Hidden until user starts) -->
+        
         <div id="quiz-container" style="display:none;">
             <div id="questions"></div>
             <button id="submit-btn">Submit</button>
         </div>
 
-        <!-- Results Display -->
+       
         <div id="results" style="display:none;"></div>
     </div>
 
     <script>
         const questions = [
-            { question: "The Earth is flat.", type: "true-false" },
-            { question: "What is the capital of France?", type: "single-choice", options: ["Paris", "London", "Rome", "Berlin"] },
-            { question: "Which of the following are programming languages?", type: "multiple-choice", options: ["Python", "JavaScript", "HTML", "C++"] },
+            { question: "The Earth is flat.", type: "true-false", correctAnswer: "false" },
+            { question: "What is the capital of France?", type: "single-choice", options: ["Paris", "London", "Rome", "Berlin"], correctAnswer: "Paris" },
+            { question: "Which of the following are programming languages?", type: "multiple-choice", options: ["Python", "JavaScript", "HTML", "C++"], correctAnswers: ["Python", "JavaScript", "C++"] },
             { question: "Explain the concept of gravity.", type: "text" }
         ];
 
         document.getElementById("start-btn").addEventListener("click", function () {
             const name = document.getElementById("name").value;
             const dob = document.getElementById("dob").value;
-            const studentId = document.getElementById("student-id").value;
+const studentId = document.getElementById("student-id").value;
             const className = document.getElementById("class").value;
-if (name && dob && studentId && className) {
+
+            if (name && dob && studentId && className) {
                 document.getElementById("user-info").style.display = "none";
                 document.getElementById("quiz-container").style.display = "block";
                 loadQuestions();
@@ -140,17 +141,17 @@ if (name && dob && studentId && className) {
                 let userAnswer;
                 if (q.type === "true-false" || q.type === "single-choice") {
                     userAnswer = document.querySelector(`input[name="q${index}"]:checked`);
-                    if (userAnswer) {
-                        if (q.type === "true-false" && userAnswer.value === "true") score++;
-                        if (q.type === "single-choice" && userAnswer.value === q.options[0]) score++;
+                    if (userAnswer && userAnswer.value === q.correctAnswer) {
+                        score++;
                     }
                 } else if (q.type === "multiple-choice") {
                     let selectedAnswers = Array.from(document.querySelectorAll(`input[name="q${index}"]:checked`)).map(e => e.value);
-                    if (JSON.stringify(selectedAnswers) === JSON.stringify(q.options.slice(0, 2))) score++;
+                    if (JSON.stringify(selectedAnswers.sort()) === JSON.stringify(q.correctAnswers.sort())) {
+                        score++;
+                    }
                 }
             });
 
             document.getElementById("quiz-container").style.display = "none";
             document.getElementById("results").style.display = "block";
-            document.getElementById("results").innerHTML = `<h3>Your Score: ${score}/${totalQuestions}</h3>`;
-        });
+
