@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Choice Test</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Multiple Choice Test</h2>
+
+        <div id="user-info">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" required><br>
+            
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" required><br>
+            
+            <label for="student-id">Student ID:</label>
+            <input type="text" id="student-id" required><br>
+
+            <label for="class">Class:</label>
+            <input type="text" id="class" required><br>
+
+            <button id="start-btn">Start Test</button>
+        </div>
+
+        <div id="quiz-container" style="display:none;">
+            <div id="questions"></div>
+            <button id="submit-btn">Submit</button>
+        </div>
+
+        <div id="results" style="display:none;"></div>
+    </div>
+
+    <script src="questions.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
