@@ -7,26 +7,26 @@ document.getElementById("start-btn").addEventListener("click", function () {
     if (name && dob && studentId && className) {
         document.getElementById("user-info").style.display = "none";
         document.getElementById("quiz-container").style.display = "block";
-        loadQuestions();
+        loadQuestions(1);
     } else {
         alert("Please fill in all fields.");
     }
 });
 
-// Load questions dynamically
-function loadQuestions() {
+let currentGroup = 1;
+
+function loadQuestions(group) {
     const questionContainer = document.getElementById("questions");
     questionContainer.innerHTML = "";
 
-    questions.forEach((q, index) => {
+    const groupQuestions = questions.filter(q => q.group === group);
+
+    groupQuestions.forEach((q, index) => {
         let questionElement = `<div class="question">
-            <p>${index + 1}. ${q.question}</p>`;
+            <p>${(group - 1) * 10 + index + 1}. ${q.question}</p>`;
 
         if (q.type === "true-false") {
-            questionElement += `
-                <input type="radio" name="q${index}" value="true"> True
-                <input type="radio" name="q${index}" value="false"> False
-            `;
+            questionElement += `<input type="radio" name="q${index}" value="true"> True <input type="radio" name="q${index}" value="false"> False`;
         } else if (q.type === "single-choice") {
             q.options.forEach(opt => {
                 questionElement += `<input type="radio" name="q${index}" value="${opt}"> ${opt}<br>`;
@@ -42,4 +42,15 @@ function loadQuestions() {
         questionElement += "</div>";
         questionContainer.innerHTML += questionElement;
     });
+
+    document.getElementById("submit-btn").innerText = group < 4 ? "Next" : "Submit";
 }
+
+document.getElementById("submit-btn").addEventListener("click", function () {
+    if (currentGroup < 4) {
+        currentGroup++;
+        loadQuestions(currentGroup);
+    } else {
+        showResults();
+    }
+});
