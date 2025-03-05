@@ -47,6 +47,23 @@
             text-align: left;
             margin-bottom: 15px;
         }
+        .question label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: 15px; 
+}
+
+.question input[type="radio"],
+.question input[type="checkbox"] {
+    margin: 0;
+}
+
+
+.question input[type="radio"],
+.question input[type="checkbox"] {
+    margin-right: 5px;
+}
     </style>
 </head>
 <body>
@@ -159,34 +176,20 @@
         document.getElementById("submit-btn").addEventListener("click", showResults);
     }
 
-    function showResults() {
-        let score = 0;
+    function submitQuiz() {
+    let score = 0;
+    const correctAnswers = { q1: "False", q2: "4" }; // Đáp án đúng
+    let totalQuestions = Object.keys(correctAnswers).length;
 
-        questions.forEach((q, index) => {
-            let userAnswer;
-
-            if (q.type === "true-false" || q.type === "single-choice") {
-                userAnswer = document.querySelector(`input[name='q${index}']:checked`);
-                if (userAnswer && userAnswer.value === q.correctAnswer) {
-                    score++;
-                }
-            } else if (q.type === "multiple-choice") {
-                let userAnswers = Array.from(document.querySelectorAll(`input[name='q${index}']:checked`)).map(el => el.value);
-                if (JSON.stringify(userAnswers.sort()) === JSON.stringify(q.correctAnswer.sort())) {
-                    score++;
-                }
-            } else if (q.type === "text") {
-                userAnswer = document.querySelector(`input[name='q${index}']`).value.trim();
-                if (userAnswer.toLowerCase() === q.correctAnswer.toLowerCase()) {
-                    score++;
-                }
-            }
-        });
-
-        document.getElementById("quiz-container").style.display = "none";
-        document.getElementById("results").style.display = "block";
-        document.getElementById("results").innerHTML = `<h3>Your Score: ${score} / ${questions.length}</h3>`;
+    for (let key in correctAnswers) {
+        let selected = document.querySelector(`input[name="${key}"]:checked`);
+        if (selected && selected.value === correctAnswers[key]) {
+            score++;
+        }
     }
+
+    document.getElementById("result").innerText = `Your Score: ${score} / ${totalQuestions}`;
+}
 });
     </script>
 </body>
