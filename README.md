@@ -169,10 +169,21 @@
             questionElement += "</div>";
             questionContainer.innerHTML += questionElement;
         });
+const nextBtn = document.getElementById("submit-btn");
+    if (nextBtn) {
+        nextBtn.remove();
+    }
 
+    // Chỉ thêm nút Submit
+    let submitButton = document.createElement("button");
+    submitButton.id = "submit-btn";
+    submitButton.innerText = "Submit";
+    submitButton.addEventListener("click", showResults);
+    questionContainer.appendChild(submitButton);
         questionContainer.innerHTML += `<button id="submit-btn">Submit</button>`;
 
-        document.getElementById("submit-btn").addEventListener("click", showResults);
+    // Gắn sự kiện submit
+    document.getElementById("submit-btn").addEventListener("click", showResults);
     }
 
    function showResults() {
