@@ -169,22 +169,21 @@
             questionElement += "</div>";
             questionContainer.innerHTML += questionElement;
         });
-const nextBtn = document.getElementById("submit-btn");
-    if (nextBtn) {
-        nextBtn.remove();
+// Xóa nút Submit nếu đã tồn tại trước đó
+    let existingSubmitBtn = document.getElementById("submit-btn");
+    if (existingSubmitBtn) {
+        existingSubmitBtn.remove();
     }
 
-    // Chỉ thêm nút Submit
+    // Tạo lại nút Submit duy nhất
     let submitButton = document.createElement("button");
     submitButton.id = "submit-btn";
     submitButton.innerText = "Submit";
     submitButton.addEventListener("click", showResults);
+    
+    // Thêm vào cuối danh sách câu hỏi
     questionContainer.appendChild(submitButton);
-        questionContainer.innerHTML += `<button id="submit-btn">Submit</button>`;
-
-    // Gắn sự kiện submit
-    document.getElementById("submit-btn").addEventListener("click", showResults);
-    }
+}
 
    function showResults() {
                 let score = 0;
