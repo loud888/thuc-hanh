@@ -52,38 +52,24 @@
 <body>
     <div class="container">
         <h2>Multiple Choice Test</h2>
-
-       
         <div id="user-info">
-            <label for="name">Full Name:</label>
-            <input type="text" id="name" required>
-            
-            <label for="dob">Date of Birth:</label>
-            <input type="date" id="dob" required>
-            
-            <label for="student-id">Student ID:</label>
-            <input type="text" id="student-id" required>
-
-            <label for="class">Class:</label>
-            <input type="text" id="class" required>
-
+            <label>Full Name: <input type="text" id="name" required></label><br>
+            <label>Date of Birth: <input type="date" id="dob" required></label><br>
+            <label>Student ID: <input type="text" id="student-id" required></label><br>
+            <label>Class: <input type="text" id="class" required></label><br>
             <button id="start-btn">Start Test</button>
         </div>
-
-        
         <div id="quiz-container" style="display:none;">
             <div id="questions"></div>
-            <button id="submit-btn">Submit</button>
+            <button id="submit-btn">Next</button>
         </div>
-
-       
         <div id="results" style="display:none;"></div>
     </div>
 
     <script>
-       const questions = [
-   
-    { question: "The Earth is flat.", type: "true-false", group: 1 },
+        document.addEventListener("DOMContentLoaded", function () {
+            const questions = [
+                { question: "The Earth is flat.", type: "true-false", group: 1 },
     { question: "What is 2 + 2?", type: "single-choice", options: ["3", "4", "5"], group: 1 },
     { question: "What is the capital of France?", type: "single-choice", options: ["Paris", "London", "Rome"], group: 1 },
     { question: "Which of these are colors?", type: "multiple-choice", options: ["Red", "Green", "Dog"], group: 1 },
@@ -130,93 +116,59 @@
     { question: "What is the sum of angles in a triangle?", type: "single-choice", options: ["180°", "360°", "90°"], group: 4 },
     { question: "What is photosynthesis?", type: "text", group: 4 }
 ];
-
-       document.getElementById("start-btn").addEventListener("click", function () {
-    const name = document.getElementById("name").value;
-    const dob = document.getElementById("dob").value;
-    const studentId = document.getElementById("student-id").value;
-    const className = document.getElementById("class").value;
-
-    if (name && dob && studentId && className) {
-        document.getElementById("user-info").style.display = "none";
-        document.getElementById("quiz-container").style.display = "block";
-        currentGroup = 1; // Reset về nhóm 1 khi bắt đầu
-        loadQuestions(currentGroup);
-    } else {
-        alert("Please fill in all fields.");
-    }
-});
-
-let currentGroup = 1;
-
-function loadQuestions(group) {
-    const questionContainer = document.getElementById("questions");
-    questionContainer.innerHTML = "";
-
-    const groupQuestions = questions.filter(q => q.group === group);
-
-    if (groupQuestions.length === 0) {
-        alert("No questions found for this group.");
-        return;
-    }
-
-    groupQuestions.forEach((q, index) => {
-        let questionElement = `<div class="question">
-            <p>${(group - 1) * 10 + index + 1}. ${q.question}</p>`;
-
-        if (q.type === "true-false") {
-            questionElement += `
-                <input type="radio" name="q${index}" value="true"> True
-                <input type="radio" name="q${index}" value="false"> False
-            `;
-        } else if (q.type === "single-choice") {
-            q.options.forEach(opt => {
-                questionElement += `<input type="radio" name="q${index}" value="${opt}"> ${opt}<br>`;
+ let currentGroup = 1;
+            document.getElementById("start-btn").addEventListener("click", function () {
+                if (document.getElementById("name").value && document.getElementById("dob").value && document.getElementById("student-id").value && document.getElementById("class").value) {
+                    document.getElementById("user-info").style.display = "none";
+                    document.getElementById("quiz-container").style.display = "block";
+                    loadQuestions(currentGroup);
+                } else {
+                    alert("Please fill in all fields.");
+                }
             });
-        } else if (q.type === "multiple-choice") {
-            q.options.forEach(opt => {
-                questionElement += `<input type="checkbox" name="q${index}" value="${opt}"> ${opt}<br>`;
+            
+            function loadQuestions(group) {
+                const questionContainer = document.getElementById("questions");
+                questionContainer.innerHTML = "";
+                const groupQuestions = questions.filter(q => q.group === group);
+                
+                groupQuestions.forEach((q, index) => {
+                    let questionElement = `<div class='question'><p>${index + 1}. ${q.question}</p>`;
+if (q.type === "true-false") {
+                        questionElement += `<input type='radio' name='q${index}' value='true'> True`;
+                        questionElement += `<input type='radio' name='q${index}' value='false'> False`;
+                    } else if (q.type === "single-choice") {
+                        q.options.forEach(opt => {
+                            questionElement += `<input type='radio' name='q${index}' value='${opt}'> ${opt}<br>`;
+                        });
+                    }
+                    questionElement += "</div>";
+                    questionContainer.innerHTML += questionElement;
+                });
+            }
+            
+            document.getElementById("submit-btn").addEventListener("click", function () {
+                if (currentGroup < 1) {
+                    currentGroup++;
+                    loadQuestions(currentGroup);
+                } else {
+                    showResults();
+                }
             });
-        } else if (q.type === "text") {
-            questionElement += `<textarea name="q${index}" rows="2" cols="30"></textarea>`;
-        }
-
-        questionElement += "</div>";
-        questionContainer.innerHTML += questionElement;
-    });
-
-   
-    document.getElementById("submit-btn").innerText = group < 4 ? "Next" : "Submit";
-}
-
-
-document.getElementById("submit-btn").addEventListener("click", function () {
-    if (currentGroup < 4) {
-        currentGroup++;
-        loadQuestions(currentGroup);
-    } else {
-        showResults();
-    }
-});
-
-        document.getElementById("submit-btn").addEventListener("click", function () {
-            let score = 0;
-            let totalQuestions = questions.length;
-
-            questions.forEach((q, index) => {
-                let userAnswer;
-                if (q.type === "true-false" || q.type === "single-choice") {
-                    userAnswer = document.querySelector(`input[name="q${index}"]:checked`);
+            
+            function showResults() {
+                let score = 0;
+                questions.forEach((q, index) => {
+                    let userAnswer = document.querySelector(`input[name='q${index}']:checked`);
                     if (userAnswer && userAnswer.value === q.correctAnswer) {
                         score++;
                     }
-                } else if (q.type === "multiple-choice") {
-                    let selectedAnswers = Array.from(document.querySelectorAll(`input[name="q${index}"]:checked`)).map(e => e.value);
-                    if (JSON.stringify(selectedAnswers.sort()) === JSON.stringify(q.correctAnswers.sort())) {
-                        score++;
-                    }
-                }
-            });
-
-            document.getElementById("quiz-container").style.display = "none";
-            document.getElementById("results").style.display = "block";
+                });
+                document.getElementById("quiz-container").style.display = "none";
+                document.getElementById("results").style.display = "block";
+                document.getElementById("results").innerHTML = `<h3>Your Score: ${score} / ${questions.length}</h3>`;
+            }
+        });
+    </script>
+</body>
+</html>
