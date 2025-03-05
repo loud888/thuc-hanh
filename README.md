@@ -170,27 +170,24 @@
             questionContainer.innerHTML += questionElement;
         });
 
-        // Hiển thị nút Submit
         questionContainer.innerHTML += `<button id="submit-btn">Submit</button>`;
 
         document.getElementById("submit-btn").addEventListener("click", showResults);
     }
 
-    function submitQuiz() {
-    let score = 0;
-    const correctAnswers = { q1: "False", q2: "4" }; // Đáp án đúng
-    let totalQuestions = Object.keys(correctAnswers).length;
-
-    for (let key in correctAnswers) {
-        let selected = document.querySelector(`input[name="${key}"]:checked`);
-        if (selected && selected.value === correctAnswers[key]) {
-            score++;
-        }
-    }
-
-    document.getElementById("result").innerText = `Your Score: ${score} / ${totalQuestions}`;
-}
-});
+   function showResults() {
+                let score = 0;
+                questions.forEach((q, index) => {
+                    let userAnswer = document.querySelector(`input[name='q${index}']:checked`);
+                    if (userAnswer && userAnswer.value === q.correctAnswer) {
+                        score++;
+                    }
+                });
+                document.getElementById("quiz-container").style.display = "none";
+                document.getElementById("results").style.display = "block";
+                document.getElementById("results").innerHTML = `<h3>Your Score: ${score} / ${questions.length}</h3>`;
+            }
+        });
     </script>
 </body>
 </html>
