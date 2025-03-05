@@ -117,58 +117,77 @@
     { question: "What is photosynthesis?", type: "text", group: 4 }
 ];
  let currentGroup = 1;
-            document.getElementById("start-btn").addEventListener("click", function () {
-                if (document.getElementById("name").value && document.getElementById("dob").value && document.getElementById("student-id").value && document.getElementById("class").value) {
-                    document.getElementById("user-info").style.display = "none";
-                    document.getElementById("quiz-container").style.display = "block";
-                    loadQuestions(currentGroup);
-                } else {
-                    alert("Please fill in all fields.");
-                }
-            });
-            
-            function loadQuestions(group) {
-                const questionContainer = document.getElementById("questions");
-                questionContainer.innerHTML = "";
-                const groupQuestions = questions.filter(q => q.group === group);
-                
-                groupQuestions.forEach((q, index) => {
-                    let questionElement = `<div class='question'><p>${index + 1}. ${q.question}</p>`;
-if (q.type === "true-false") {
-                        questionElement += `<input type='radio' name='q${index}' value='true'> True`;
-                        questionElement += `<input type='radio' name='q${index}' value='false'> False`;
-                    } else if (q.type === "single-choice") {
-                        q.options.forEach(opt => {
-                            questionElement += `<input type='radio' name='q${index}' value='${opt}'> ${opt}<br>`;
-                        });
-                    }
-                    questionElement += "</div>";
-                    questionContainer.innerHTML += questionElement;
+           document.getElementById("start-btn").addEventListener("click", function () {
+        if (document.getElementById("name").value && document.getElementById("dob").value && document.getElementById("student-id").value && document.getElementById("class").value) {
+            document.getElementById("user-info").style.display = "none";
+            document.getElementById("quiz-container").style.display = "block";
+            loadQuestions();
+        } else {
+            alert("Please fill in all fields.");
+        }
+    });
+
+    function loadQuestions() {
+        const questionContainer = document.getElementById("questions");
+        questionContainer.innerHTML = "";
+
+        questions.forEach((q, index) => {
+            let questionElement = `<div class='question'><p>${index + 1}. ${q.question}</p>`;
+
+            if (q.type === "true-false") {
+                questionElement += `<input type='radio' name='q${index}' value='true'> True`;
+                questionElement += `<input type='radio' name='q${index}' value='false'> False`;
+            } else if (q.type === "single-choice") {
+                q.options.forEach(opt => {
+                    questionElement += `<input type='radio' name='q${index}' value='${opt}'> ${opt}<br>`;
                 });
+            } else if (q.type === "multiple-choice") {
+                q.options.forEach(opt => {
+                    questionElement += `<input type='checkbox' name='q${index}' value='${opt}'> ${opt}<br>`;
+                });
+            } else if (q.type === "text") {
+                questionElement += `<input type='text' name='q${index}'>`;
             }
-            
-            document.getElementById("submit-btn").addEventListener("click", function () {
-                if (currentGroup < 1) {
-                    currentGroup++;
-                    loadQuestions(currentGroup);
-                } else {
-                    showResults();
+
+            questionElement += "</div>";
+            questionContainer.innerHTML += questionElement;
+        });
+
+        // Hiển thị nút Submit
+        questionContainer.innerHTML += `<button id="submit-btn">Submit</button>`;
+
+        document.getElementById("submit-btn").addEventListener("click", showResults);
+    }
+
+    function showResults() {
+        let score = 0;
+
+        questions.forEach((q, index) => {
+            let userAnswer;
+
+            if (q.type === "true-false" || q.type === "single-choice") {
+                userAnswer = document.querySelector(`input[name='q${index}']:checked`);
+                if (userAnswer && userAnswer.value === q.correctAnswer) {
+                    score++;
                 }
-            });
-            
-            function showResults() {
-                let score = 0;
-                questions.forEach((q, index) => {
-                    let userAnswer = document.querySelector(`input[name='q${index}']:checked`);
-                    if (userAnswer && userAnswer.value === q.correctAnswer) {
-                        score++;
-                    }
-                });
-                document.getElementById("quiz-container").style.display = "none";
-                document.getElementById("results").style.display = "block";
-                document.getElementById("results").innerHTML = `<h3>Your Score: ${score} / ${questions.length}</h3>`;
+            } else if (q.type === "multiple-choice") {
+                let userAnswers = Array.from(document.querySelectorAll(`input[name='q${index}']:checked`)).map(el => el.value);
+                if (JSON.stringify(userAnswers.sort()) === JSON.stringify(q.correctAnswer.sort())) {
+                    score++;
+                }
+            } else if (q.type === "text") {
+                userAnswer = document.querySelector(`input[name='q${index}']`).value.trim();
+                if (userAnswer.toLowerCase() === q.correctAnswer.toLowerCase()) {
+                    score++;
+                }
             }
         });
+
+        document.getElementById("quiz-container").style.display = "none";
+        document.getElementById("results").style.display = "block";
+        document.getElementById("results").innerHTML = `<h3>Your Score: ${score} / ${questions.length}</h3>`;
+    }
+});
     </script>
 </body>
 </html>
